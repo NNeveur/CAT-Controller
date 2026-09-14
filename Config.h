@@ -1,6 +1,12 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
+  #if __has_include(<sdkconfig.h>)
+    #include <sdkconfig.h>
+  #endif
+#endif
+
 #include <Arduino.h>
 
 // ============================================================================
