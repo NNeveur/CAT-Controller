@@ -11,6 +11,10 @@ public:
     // Initialize hardware serial for CAT communication
     void begin(HardwareSerial& serialPort, uint32_t baudRate, int rxPin, int txPin);
 
+    // Change CAT Baud Rate dynamically
+    void setBaudRate(uint32_t newBaudRate);
+    uint32_t getBaudRate() const { return currentBaudRate; }
+
     // Process incoming serial data (call in main loop)
     void update();
 
@@ -37,6 +41,9 @@ public:
 
 private:
     HardwareSerial* catSerial;
+    uint32_t currentBaudRate;
+    int catRxPin;
+    int catTxPin;
     uint32_t currentFrequency;
     RadioMode currentMode;
     bool connected;

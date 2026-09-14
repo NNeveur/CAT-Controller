@@ -7,11 +7,13 @@
   - Rotary Encoder tuning with selectable step sizes (10Hz, 100Hz, 1kHz, 10kHz, 100kHz)
   - Touchscreen buttons for Mode switching: LSB, USB, AM, FM
   - Touchscreen buttons for Band switching: 80m, 40m, 20m, 10m
+  - Configuration Screen for CAT Serial Baud Rate selection (4800 to 57600 baud) with NVS persistence
   - Real-time status update & CAT connection monitoring
 */
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <Preferences.h>
 #include "Config.h"
 #include "KenwoodCAT.h"
 #include "RotaryEncoderDriver.h"
@@ -21,6 +23,7 @@
 KenwoodCAT radio;
 RotaryEncoderDriver encoder;
 DisplayGUI gui;
+Preferences preferences;
 
 // Poll timer for CAT status updates
 unsigned long lastCatPoll = 0;
@@ -56,10 +59,12 @@ bool readTouch(int16_t &touchX, int16_t &touchY) {
 }
 
 void onEncoderTurn(int steps, uint32_t stepSize) {
+    // Only adjust frequency on main screen
+    if (gui.getScreen() != SCREEN_MAIN) return;
+
     uint32_t currentFreq = radio.getFrequency();
     int64_t newFreq = (int64_t)currentFreq + ((int64_t)steps * stepSize);
 
-    // Limit frequency range (30 kHz to 60 MHz for TS-2000 HF/6M VFO A)
     if (newFreq < 30000) newFreq = 30000;
     if (newFreq > 60000000) newFreq = 60000000;
 
@@ -74,8 +79,12 @@ void setup() {
     Serial.begin(115200);
     Serial.println("Starting Kenwood TS-2000 CAT Controller...");
 
+    // Load saved baud rate preference (or default 57600)
+    preferences.begin("ts2000_cat", false);
+    uint32_t savedBaud = preferences.getUInt("baud_rate", DEFAULT_CAT_BAUDRATE);
+
     // Setup CAT Serial connection
-    radio.begin(Serial1, CAT_BAUDRATE, CAT_RX_PIN, CAT_TX_PIN);
+    radio.begin(Serial1, savedBaud, CAT_RX_PIN, CAT_TX_PIN);
 
     // Setup Rotary Encoder
     encoder.begin(ENCODER_PIN_A, ENCODER_PIN_B, ENCODER_PIN_BTN);
@@ -105,13 +114,18 @@ void loop() {
             wasTouched = true;
             RadioMode newMode = radio.getMode();
             uint32_t newFreq = radio.getFrequency();
+            uint32_t newBaud = radio.getBaudRate();
 
-            if (gui.checkTouch(tx, ty, newMode, newFreq)) {
+            if (gui.checkTouch(tx, ty, newMode, newFreq, newBaud)) {
                 if (newMode != radio.getMode()) {
                     radio.setMode(newMode);
                 }
                 if (newFreq != radio.getFrequency()) {
                     radio.setFrequency(newFreq);
+                }
+                if (newBaud != radio.getBaudRate()) {
+                    radio.setBaudRate(newBaud);
+                    preferences.putUInt("baud_rate", newBaud);
                 }
             }
         }
@@ -122,9 +136,11 @@ void loop() {
     // 4. Periodically poll TS-2000 status
     if (millis() - lastCatPoll > CAT_POLL_INTERVAL) {
         lastCatPoll = millis();
-        radio.requestStatus();
+        if (gui.getScreen() == SCREEN_MAIN) {
+            radio.requestStatus();
+        }
     }
 
     // 5. Refresh GUI display state
-    gui.update(radio.getFrequency(), radio.getMode(), encoder.getStepSize(), radio.isConnected());
+    gui.update(radio.getFrequency(), radio.getMode(), encoder.getStepSize(), radio.isConnected(), radio.getBaudRate());
 }

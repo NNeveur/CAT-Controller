@@ -1,16 +1,32 @@
 #include "KenwoodCAT.h"
 
 KenwoodCAT::KenwoodCAT()
-    : catSerial(nullptr), currentFrequency(14200000), currentMode(MODE_USB),
+    : catSerial(nullptr), currentBaudRate(DEFAULT_CAT_BAUDRATE), catRxPin(CAT_RX_PIN), catTxPin(CAT_TX_PIN),
+      currentFrequency(14200000), currentMode(MODE_USB),
       connected(false), lastResponseTime(0), freqCallback(nullptr), modeCallback(nullptr) {
 }
 
 void KenwoodCAT::begin(HardwareSerial& serialPort, uint32_t baudRate, int rxPin, int txPin) {
     catSerial = &serialPort;
-    catSerial->begin(baudRate, SERIAL_8N1, rxPin, txPin);
+    currentBaudRate = baudRate;
+    catRxPin = rxPin;
+    catTxPin = txPin;
+    catSerial->begin(currentBaudRate, SERIAL_8N1, catRxPin, catTxPin);
     rxBuffer.reserve(64);
 
     // Initial CAT query
+    requestFrequency();
+    requestMode();
+}
+
+void KenwoodCAT::setBaudRate(uint32_t newBaudRate) {
+    if (newBaudRate == currentBaudRate) return;
+    currentBaudRate = newBaudRate;
+    connected = false;
+    if (catSerial) {
+        catSerial->end();
+        catSerial->begin(currentBaudRate, SERIAL_8N1, catRxPin, catTxPin);
+    }
     requestFrequency();
     requestMode();
 }

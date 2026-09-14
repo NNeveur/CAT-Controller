@@ -60,7 +60,18 @@
 // ESP32-S3 Hardware Serial 1 / Serial 2
 #define CAT_RX_PIN  19   // ESP32 RX <- MAX3232 TX
 #define CAT_TX_PIN  20   // ESP32 TX -> MAX3232 RX
-#define CAT_BAUDRATE 57600 // Default Kenwood TS-2000 CAT Baud Rate (or 9600)
+#define DEFAULT_CAT_BAUDRATE 57600 // Default Kenwood TS-2000 CAT Baud Rate
+
+const uint32_t CAT_BAUD_RATES[] = { 4800, 9600, 19200, 38400, 57600 };
+const uint8_t NUM_BAUD_RATES = sizeof(CAT_BAUD_RATES) / sizeof(CAT_BAUD_RATES[0]);
+
+// ============================================================================
+// GUI Screen States
+// ============================================================================
+enum AppScreen {
+    SCREEN_MAIN,
+    SCREEN_CONFIG
+};
 
 // ============================================================================
 // Radio Operating Modes (Kenwood TS-2000 Command MD<n>;)

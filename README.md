@@ -10,6 +10,7 @@ Une application complète sous **Arduino IDE** permettant de contrôler un émet
 - 🎛️ **Boutons tactiles de Mode** : `LSB`, `USB`, `AM`, `FM`.
 - 📡 **Boutons tactiles de Bande** : `80m`, `40m`, `20m`, `10m`.
 - 🔄 **Contrôle de fréquence par encodeur rotatif** avec pas de réglage sélectionnables (`10 Hz`, `100 Hz`, `1 kHz`, `10 kHz`, `100 kHz`).
+- ⚙️ **Écran de Configuration tactile (Bouton CFG)** : Choix de la vitesse de la liaison série CAT (`4800`, `9600`, `19200`, `38400`, `57600` bauds) avec sauvegarde permanente en mémoire flash NVS (Preferences ESP32).
 - ⚡ **Indicateur de statut CAT en temps réel** (détection de réponse du transceiver).
 - 🔗 **Protocole Kenwood TS-2000 ASCII native** (`FA`, `MD`, `IF`).
 
@@ -62,7 +63,7 @@ Dans le gestionnaire de cartes et de bibliothèques d'Arduino IDE, installez :
 ├── KenwoodCAT.cpp         # Implémentation du pilote protocole CAT
 ├── RotaryEncoderDriver.h  # Header du gestionnaire d'encodeur rotatif et de bouton
 ├── RotaryEncoderDriver.cpp# Implémentation du gestionnaire d'encodeur
-├── DisplayGUI.h           # Header de l'interface graphique ST7701 et boutons tactiles
+├── DisplayGUI.h           # Header de l'interface graphique ST7701, écran de config et boutons tactiles
 ├── DisplayGUI.cpp         # Implémentation du rendu UI et gestion des contacts tactiles
 └── TS2000_MaTouch_CAT.ino # Sketch principal Arduino
 ```
@@ -79,3 +80,4 @@ Dans le gestionnaire de cartes et de bibliothèques d'Arduino IDE, installez :
    - Appuyez sur le bouton rotatif pour changer le pas de réglage (`10Hz`, `100Hz`, `1kHz`, `10kHz`, `100kHz`).
    - Touchez les boutons à l'écran `LSB`, `USB`, `AM`, `FM` pour basculer de mode de modulation.
    - Touchez les boutons `80m`, `40m`, `20m`, `10m` pour sauter directement sur la bande souhaitée.
+   - Touchez le bouton **`CFG`** en haut de l'écran principal pour ouvrir le menu de configuration de la vitesse du port série CAT (`4800`, `9600`, `19200`, `38400`, `57600` bauds). La vitesse choisie est automatiquement enregistrée en mémoire non volatile (NVS).
