@@ -1,3 +1,8 @@
+/**
+ * @file KenwoodCAT.cpp
+ * @brief Implémentation du pilote de communication RS-232 CAT pour Kenwood TS-2000.
+ */
+
 #include "KenwoodCAT.h"
 
 KenwoodCAT::KenwoodCAT()
@@ -14,7 +19,7 @@ void KenwoodCAT::begin(HardwareSerial& serialPort, uint32_t baudRate, int rxPin,
     catSerial->begin(currentBaudRate, SERIAL_8N1, catRxPin, catTxPin);
     rxBuffer.reserve(64);
 
-    // Initial CAT query
+    // Reconstitution de l'état initial par interrogations CAT
     requestFrequency();
     requestMode();
 }
@@ -34,6 +39,7 @@ void KenwoodCAT::setBaudRate(uint32_t newBaudRate) {
 void KenwoodCAT::update() {
     if (!catSerial) return;
 
+    // Lecture des caractères série jusqu'au délimiteur ';'
     while (catSerial->available()) {
         char c = (char)catSerial->read();
         if (c == ';') {
@@ -47,7 +53,7 @@ void KenwoodCAT::update() {
         }
     }
 
-    // Connection timeout check (5 seconds)
+    // Vérification du délai d'expiration de la connexion (5 secondes)
     if (millis() - lastResponseTime > 5000) {
         connected = false;
     }
@@ -64,7 +70,7 @@ void KenwoodCAT::setFrequency(uint32_t freqHz) {
     if (freqHz == currentFrequency) return;
 
     currentFrequency = freqHz;
-    // Format 11-digit zero-padded frequency string
+    // Formatage de la commande FA sur 11 chiffres complétés par des zéros (ex: FA00014200000)
     char buf[16];
     snprintf(buf, sizeof(buf), "FA%011lu", (unsigned long)freqHz);
     sendCommand(String(buf));
@@ -76,6 +82,7 @@ void KenwoodCAT::requestFrequency() {
 
 void KenwoodCAT::setMode(RadioMode mode) {
     currentMode = mode;
+    // Formatage de la commande MD avec le numéro de mode (ex: MD2 pour USB)
     char buf[8];
     snprintf(buf, sizeof(buf), "MD%d", (int)mode);
     sendCommand(String(buf));
@@ -93,7 +100,7 @@ void KenwoodCAT::parseCommand(const String& cmd) {
     lastResponseTime = millis();
     connected = true;
 
-    // Parse VFO-A Frequency command response: FA00014200000
+    // Analyse de la réponse à la commande de fréquence VFO-A : FA00014200000
     if (cmd.startsWith("FA") && cmd.length() >= 13) {
         String freqStr = cmd.substring(2, 13);
         uint32_t parsedFreq = (uint32_t)freqStr.substring(0, 11).toInt();
@@ -104,7 +111,7 @@ void KenwoodCAT::parseCommand(const String& cmd) {
             }
         }
     }
-    // Parse Mode command response: MD1 (LSB), MD2 (USB), MD4 (FM), MD5 (AM)
+    // Analyse de la réponse à la commande de mode : MD1 (LSB), MD2 (USB), MD4 (FM), MD5 (AM)
     else if (cmd.startsWith("MD") && cmd.length() >= 3) {
         int modeVal = cmd.substring(2, 3).toInt();
         RadioMode parsedMode = static_cast<RadioMode>(modeVal);
@@ -115,7 +122,8 @@ void KenwoodCAT::parseCommand(const String& cmd) {
             }
         }
     }
-    // Parse Information status command response: IF0001420000000000+00000000000013...
+    // Analyse de la réponse à la commande d'information de statut IF:
+    // Ex: IF0001420000000000+00000000000013...
     else if (cmd.startsWith("IF") && cmd.length() >= 31) {
         String freqStr = cmd.substring(2, 13);
         uint32_t parsedFreq = (uint32_t)freqStr.toInt();

@@ -1,18 +1,23 @@
+/**
+ * @file DisplayGUI.cpp
+ * @brief Implémentation du rendu graphique de l'interface utilisateur et de la gestion tactile.
+ */
+
 #include "DisplayGUI.h"
 
-// Color Palette (16-bit RGB565)
-#define COLOR_BG          0x0000 // Black
-#define COLOR_CARD_BG     0x18E3 // Dark Gray / Blue-gray
-#define COLOR_HEADER      0x0A2D // Deep Navy
-#define COLOR_TEXT        0xFFFF // White
-#define COLOR_TEXT_MUTED  0x9CD5 // Light Gray
-#define COLOR_ACCENT      0x041F // Cyan / Blue Accent
-#define COLOR_FREQ        0x07E0 // Bright Green VFO text
-#define COLOR_ACTIVE_BTN  0x03E0 // Active Green
-#define COLOR_INACTIVE_BTN 0x2A54 // Dark Slate
-#define COLOR_BORDER      0x52AA // Silver Border
-#define COLOR_RED         0xF800 // Red (Disconnected)
-#define COLOR_GREEN       0x07E0 // Green (Connected)
+// Palette de couleurs (Format 16-bit RGB565)
+#define COLOR_BG          0x0000 // Noir
+#define COLOR_CARD_BG     0x18E3 // Gris foncé / Bleuté
+#define COLOR_HEADER      0x0A2D // Bleu marine profond
+#define COLOR_TEXT        0xFFFF // Blanc
+#define COLOR_TEXT_MUTED  0x9CD5 // Gris clair
+#define COLOR_ACCENT      0x041F // Cyan / Accent Bleu
+#define COLOR_FREQ        0x07E0 // Vert vif pour le VFO
+#define COLOR_ACTIVE_BTN  0x03E0 // Vert bouton actif
+#define COLOR_INACTIVE_BTN 0x2A54 // Ardoise foncée
+#define COLOR_BORDER      0x52AA // Bordure argentée
+#define COLOR_RED         0xF800 // Rouge (Indicateur déconnecté)
+#define COLOR_GREEN       0x07E0 // Vert (Indicateur connecté)
 
 DisplayGUI::DisplayGUI()
     : gfx(nullptr), currentScreen(SCREEN_MAIN), lastFreq(0), lastMode(MODE_CW),
@@ -21,10 +26,10 @@ DisplayGUI::DisplayGUI()
 }
 
 void DisplayGUI::initButtons() {
-    // Top bar CFG button
+    // Bouton CFG situé dans la barre d'en-tête
     cfgHeaderBtn = { 350, 10, 60, 30, "CFG", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
 
-    // Mode Buttons (4 buttons: LSB, USB, AM, FM) arranged in row 1
+    // Boutons de mode (4 boutons : LSB, USB, AM, FM) disposés en ligne 1
     const int16_t modeY = 270;
     const int16_t btnWidth = 90;
     const int16_t btnHeight = 50;
@@ -36,17 +41,17 @@ void DisplayGUI::initButtons() {
     modeButtons[2] = { startX + 2 * (btnWidth + spacing), modeY, btnWidth, btnHeight, "AM",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
     modeButtons[3] = { startX + 3 * (btnWidth + spacing), modeY, btnWidth, btnHeight, "FM",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
 
-    // Band Buttons (4 buttons: 80M, 40M, 20M, 10M) arranged in row 2
+    // Boutons de bande (4 boutons : 80M, 40M, 20M, 10M) disposés en ligne 2
     const int16_t bandY = 345;
     bandButtons[0] = { startX,                             bandY, btnWidth, btnHeight, "80m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
     bandButtons[1] = { startX + (btnWidth + spacing),     bandY, btnWidth, btnHeight, "40m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
     bandButtons[2] = { startX + 2 * (btnWidth + spacing), bandY, btnWidth, btnHeight, "20m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
     bandButtons[3] = { startX + 3 * (btnWidth + spacing), bandY, btnWidth, btnHeight, "10m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
 
-    // Config Screen Back Button
-    backBtn = { 35, 400, 410, 50, "< BACK TO MAIN SCREEN", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    // Bouton de retour sur l'écran de configuration
+    backBtn = { 35, 400, 410, 50, "< RETOUR ECRAN PRINCIPAL", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
 
-    // Baud Rate Buttons on Config Screen
+    // Boutons de débit bauds sur l'écran de configuration
     baudButtons[0] = { 40,  150, 120, 50, "4800",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
     baudButtons[1] = { 180, 150, 120, 50, "9600",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
     baudButtons[2] = { 320, 150, 120, 50, "19200", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
@@ -55,12 +60,8 @@ void DisplayGUI::initButtons() {
 }
 
 void DisplayGUI::begin() {
-    // Arduino_GFX ST7701 RGB Display Bus & Device Setup
-    // NOTE: Arduino_GFX_Library v1.3.6+ replaced the old Arduino_ST7701_RGBPanel
-    // class with a generic Arduino_RGB_Display class that takes a secondary
-    // 3-wire SPI bus (for register init) plus a named ST7701 init sequence.
-    // st7701_type5_init_operations is the sequence used by Makerfabs for this
-    // exact panel; it is already declared inside Arduino_GFX_Library.h.
+    // Initialisation de l'affichage Arduino_GFX ST7701 RGB avec bus SPI 3-fils pour les registres.
+    // st7701_type5_init_operations est la séquence Makerfabs pour l'écran 2.1" 480x480.
     Arduino_DataBus *initBus = new Arduino_SWSPI(
         GFX_NOT_DEFINED /* DC */, TFT_CS,
         TFT_SCLK, TFT_MOSI, GFX_NOT_DEFINED /* MISO */
@@ -82,11 +83,10 @@ void DisplayGUI::begin() {
         st7701_type5_init_operations, sizeof(st7701_type5_init_operations)
     );
 
-
     gfx->begin();
     gfx->fillScreen(COLOR_BG);
 
-    // Backlight is no longer driven by the display driver itself; enable it manually.
+    // Activation du rétroéclairage
     pinMode(TFT_BLK, OUTPUT);
     digitalWrite(TFT_BLK, HIGH);
 
@@ -110,14 +110,14 @@ void DisplayGUI::drawMainScreen(uint32_t currentFreq, RadioMode currentMode, uin
 void DisplayGUI::drawConfigScreen(uint32_t currentBaud) {
     gfx->fillScreen(COLOR_BG);
 
-    // Header bar
+    // Barre d'en-tête
     gfx->fillRect(0, 0, TFT_WIDTH, 50, COLOR_HEADER);
     gfx->setTextColor(COLOR_TEXT);
     gfx->setTextSize(2);
     gfx->setCursor(30, 16);
     gfx->print("CAT SETUP CONFIG");
 
-    // Title Card
+    // Carte de titre
     gfx->fillRoundRect(30, 70, 420, 50, 10, COLOR_CARD_BG);
     gfx->drawRoundRect(30, 70, 420, 50, 10, COLOR_BORDER);
     gfx->setTextColor(COLOR_TEXT_MUTED);
@@ -164,17 +164,17 @@ void DisplayGUI::update(uint32_t currentFreq, RadioMode currentMode, uint32_t st
 }
 
 void DisplayGUI::drawHeader(bool connected) {
-    // Top Bar Header
+    // Barre supérieure
     gfx->fillRect(0, 0, TFT_WIDTH, 50, COLOR_HEADER);
     gfx->setTextColor(COLOR_TEXT);
     gfx->setTextSize(2);
     gfx->setCursor(30, 16);
     gfx->print("TS-2000 CAT");
 
-    // CFG Button in header
+    // Bouton CFG dans l'en-tête
     drawButton(cfgHeaderBtn);
 
-    // CAT Connection Indicator Dot
+    // Témoin lumineux d'état de connexion CAT (Vert = connecté, Rouge = déconnecté)
     uint16_t statusColor = connected ? COLOR_GREEN : COLOR_RED;
     gfx->fillCircle(430, 25, 8, statusColor);
     gfx->drawCircle(430, 25, 10, COLOR_TEXT);
@@ -277,34 +277,34 @@ bool DisplayGUI::isPointInButton(int16_t px, int16_t py, const TouchButton& btn)
 
 bool DisplayGUI::checkTouch(int16_t touchX, int16_t touchY, RadioMode& outNewMode, uint32_t& outNewFreq, uint32_t& outNewBaud) {
     if (currentScreen == SCREEN_MAIN) {
-        // Check CFG header button
+        // Appui sur le bouton CFG dans l'en-tête
         if (isPointInButton(touchX, touchY, cfgHeaderBtn)) {
             currentScreen = SCREEN_CONFIG;
             drawConfigScreen(outNewBaud);
             return true;
         }
 
-        // Check Mode Buttons
+        // Appui sur les boutons de mode
         if (isPointInButton(touchX, touchY, modeButtons[0])) { outNewMode = MODE_LSB; return true; }
         if (isPointInButton(touchX, touchY, modeButtons[1])) { outNewMode = MODE_USB; return true; }
         if (isPointInButton(touchX, touchY, modeButtons[2])) { outNewMode = MODE_AM; return true; }
         if (isPointInButton(touchX, touchY, modeButtons[3])) { outNewMode = MODE_FM; return true; }
 
-        // Check Band Buttons
+        // Appui sur les boutons de bande
         if (isPointInButton(touchX, touchY, bandButtons[0])) { outNewFreq = BANDS[0].defaultFreqHz; outNewMode = BANDS[0].defaultMode; return true; }
         if (isPointInButton(touchX, touchY, bandButtons[1])) { outNewFreq = BANDS[1].defaultFreqHz; outNewMode = BANDS[1].defaultMode; return true; }
         if (isPointInButton(touchX, touchY, bandButtons[2])) { outNewFreq = BANDS[2].defaultFreqHz; outNewMode = BANDS[2].defaultMode; return true; }
         if (isPointInButton(touchX, touchY, bandButtons[3])) { outNewFreq = BANDS[3].defaultFreqHz; outNewMode = BANDS[3].defaultMode; return true; }
 
     } else if (currentScreen == SCREEN_CONFIG) {
-        // Check Back button
+        // Appui sur le bouton Retour
         if (isPointInButton(touchX, touchY, backBtn)) {
             currentScreen = SCREEN_MAIN;
             drawMainScreen(outNewFreq, outNewMode, lastStepSize, lastConnected);
             return true;
         }
 
-        // Check Baud rate buttons
+        // Appui sur un bouton de vitesse de transmission
         for (int i = 0; i < NUM_BAUD_RATES; i++) {
             if (isPointInButton(touchX, touchY, baudButtons[i])) {
                 outNewBaud = CAT_BAUD_RATES[i];
