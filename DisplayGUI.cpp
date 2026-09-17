@@ -56,6 +56,16 @@ void DisplayGUI::initButtons() {
 
 void DisplayGUI::begin() {
     // Arduino_GFX ST7701 RGB Display Bus & Device Setup
+    // NOTE: Arduino_GFX_Library v1.3.6+ replaced the old Arduino_ST7701_RGBPanel
+    // class with a generic Arduino_RGB_Display class that takes a secondary
+    // 3-wire SPI bus (for register init) plus a named ST7701 init sequence.
+    // st7701_type5_init_operations is the sequence used by Makerfabs for this
+    // exact panel; it is already declared inside Arduino_GFX_Library.h.
+    Arduino_DataBus *initBus = new Arduino_SWSPI(
+        GFX_NOT_DEFINED /* DC */, TFT_CS,
+        TFT_SCLK, TFT_MOSI, GFX_NOT_DEFINED /* MISO */
+    );
+
     Arduino_ESP32RGBPanel *rgbpanel = new Arduino_ESP32RGBPanel(
         TFT_DE, TFT_VSYNC, TFT_HSYNC, TFT_PCLK,
         TFT_R0, TFT_R1, TFT_R2, TFT_R3, TFT_R4,
@@ -66,13 +76,19 @@ void DisplayGUI::begin() {
         1 /* pclk_active_neg */, 9000000 /* prefer_speed */
     );
 
-    gfx = new Arduino_ST7701_RGBPanel(
-        rgbpanel, TFT_WIDTH, TFT_HEIGHT,
-        TFT_SCLK, TFT_MOSI, TFT_CS, TFT_BLK
+    gfx = new Arduino_RGB_Display(
+        TFT_WIDTH, TFT_HEIGHT, rgbpanel, 0 /* rotation */, true /* auto_flush */,
+        initBus, GFX_NOT_DEFINED /* RST */,
+        st7701_type5_init_operations, sizeof(st7701_type5_init_operations)
     );
+
 
     gfx->begin();
     gfx->fillScreen(COLOR_BG);
+
+    // Backlight is no longer driven by the display driver itself; enable it manually.
+    pinMode(TFT_BLK, OUTPUT);
+    digitalWrite(TFT_BLK, HIGH);
 
     drawMainScreen(14200000, MODE_USB, 1000, false);
 }

@@ -11,11 +11,11 @@
   - Real-time status update & CAT connection monitoring
 */
 
-#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
-  #if __has_include(<sdkconfig.h>)
-    #include <sdkconfig.h>
-  #endif
-#endif
+//#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
+//  #if __has_include(<sdkconfig.h>)
+//    #include <sdkconfig.h>
+//  #endif
+//#endif
 
 #include <Arduino.h>
 #include <Wire.h>

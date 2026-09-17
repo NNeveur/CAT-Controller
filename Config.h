@@ -1,11 +1,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
-  #if __has_include(<sdkconfig.h>)
-    #include <sdkconfig.h>
-  #endif
-#endif
+//#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
+//  #if __has_include(<sdkconfig.h>)
+//    #include <sdkconfig.h>
+//  #endif
+//#endif
 
 #include <Arduino.h>
 
@@ -16,34 +16,34 @@
 #define TFT_HEIGHT  480
 
 // ST7701 3-Wire SPI / RGB Pins for MaTouch ESP32-S3 2.1"
-#define TFT_DE      40
-#define TFT_VSYNC   41
-#define TFT_HSYNC   42
-#define TFT_PCLK    39
+#define TFT_DE      2
+#define TFT_VSYNC   42
+#define TFT_HSYNC   3
+#define TFT_PCLK    45
 
-#define TFT_R0      45
-#define TFT_R1      48
-#define TFT_R2      47
-#define TFT_R3      21
-#define TFT_R4      14
+#define TFT_R0      4
+#define TFT_R1      41
+#define TFT_R2      5
+#define TFT_R3      40
+#define TFT_R4      6
 
-#define TFT_G0      5
-#define TFT_G1      6
-#define TFT_G2      7
-#define TFT_G3      15
-#define TFT_G4      16
-#define TFT_G5      4
+#define TFT_G0      39
+#define TFT_G1      7
+#define TFT_G2      47
+#define TFT_G3      8
+#define TFT_G4      48
+#define TFT_G5      9
 
-#define TFT_B0      8
-#define TFT_B1      3
-#define TFT_B2      46
-#define TFT_B3      9
-#define TFT_B4      1
+#define TFT_B0      11
+#define TFT_B1      15
+#define TFT_B2      12
+#define TFT_B3      16
+#define TFT_B4      21
 
-#define TFT_SCLK    12
-#define TFT_MOSI    11
-#define TFT_CS      10
-#define TFT_BLK     44 // Backlight PIN
+#define TFT_SCLK    46
+#define TFT_MOSI    0
+#define TFT_CS      1
+#define TFT_BLK     38 // Backlight PIN
 
 // ============================================================================
 // Touch Controller Configuration (I2C CST816D / GT911)
@@ -57,15 +57,15 @@
 // Rotary Encoder Pinout Configuration
 // ============================================================================
 #define ENCODER_PIN_A   13
-#define ENCODER_PIN_B   2
-#define ENCODER_PIN_BTN 0  // Built-in button or center knob button
+#define ENCODER_PIN_B   10
+#define ENCODER_PIN_BTN 14 // Built-in button or center knob button
 
 // ============================================================================
 // Kenwood CAT Serial RS-232 Communication Pins & Settings
 // ============================================================================
 // ESP32-S3 Hardware Serial 1 / Serial 2
-#define CAT_RX_PIN  19   // ESP32 RX <- MAX3232 TX
-#define CAT_TX_PIN  20   // ESP32 TX -> MAX3232 RX
+#define CAT_RX_PIN  44   // ESP32 RX <- MAX3232 TX
+#define CAT_TX_PIN  43   // ESP32 TX -> MAX3232 RX
 #define DEFAULT_CAT_BAUDRATE 57600 // Default Kenwood TS-2000 CAT Baud Rate
 
 const uint32_t CAT_BAUD_RATES[] = { 4800, 9600, 19200, 38400, 57600 };

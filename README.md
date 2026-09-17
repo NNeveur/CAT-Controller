@@ -52,12 +52,6 @@ Dans le gestionnaire de cartes et de bibliothèques d'Arduino IDE, installez :
 - **Flash Size** : `8MB (64Mb)` / `16MB`
 - **Partition Scheme** : `Huge APP (3MB No OTA/1MB SPIFFS)`
 
-### ⚠️ Dépannage Compilation ESP32 Core 3.x (`sdkconfig.h`)
-Si vous rencontrez l'erreur `fatal error: sdkconfig.h: No such file or directory` lors de la compilation avec la version 3.x du core ESP32 dans Arduino IDE :
-1. Dans Arduino IDE, vérifiez que le type de carte sélectionné est bien **`ESP32S3 Dev Module`** (Menu *Outils -> Type de carte -> esp32 -> ESP32S3 Dev Module*).
-2. N'utilisez pas la carte générique non-ESP32 ("Arduino Uno" ou autre).
-3. Les fichiers d'entête `Config.h` et `TS2000_MaTouch_CAT.ino` incluent automatiquement la directive `#if __has_include(<sdkconfig.h>)` pour assurer la compatibilité ascendante entre les versions ESP32 Core v2.x et v3.x.
-
 ---
 
 ## 📂 Structure du Projet
