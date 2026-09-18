@@ -26,37 +26,44 @@ DisplayGUI::DisplayGUI()
 }
 
 void DisplayGUI::initButtons() {
-    // Bouton CFG situé dans la barre d'en-tête
-    cfgHeaderBtn = { 350, 10, 60, 30, "CFG", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    // Bouton CFG situé dans la barre d'en-tête (écran rond : X=305, Y=40)
+    cfgHeaderBtn = { 305, 40, 55, 30, "CFG", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
 
-    // Boutons de mode (4 boutons : LSB, USB, AM, FM) disposés en ligne 1
-    const int16_t modeY = 270;
-    const int16_t btnWidth = 90;
-    const int16_t btnHeight = 50;
-    const int16_t spacing = 15;
-    const int16_t startX = 35;
+    // Boutons de mode (4 boutons : LSB, USB, AM, FM) disposés en ligne 1 (écran rond : Y=255)
+    const int16_t modeY = 255;
+    const int16_t modeBtnWidth = 78;
+    const int16_t modeBtnHeight = 48;
+    const int16_t modeSpacing = 10;
+    const int16_t modeStartX = 69;
 
-    modeButtons[0] = { startX,                             modeY, btnWidth, btnHeight, "LSB", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    modeButtons[1] = { startX + (btnWidth + spacing),     modeY, btnWidth, btnHeight, "USB", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    modeButtons[2] = { startX + 2 * (btnWidth + spacing), modeY, btnWidth, btnHeight, "AM",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    modeButtons[3] = { startX + 3 * (btnWidth + spacing), modeY, btnWidth, btnHeight, "FM",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    modeButtons[0] = { modeStartX,                                 modeY, modeBtnWidth, modeBtnHeight, "LSB", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    modeButtons[1] = { modeStartX + (modeBtnWidth + modeSpacing),     modeY, modeBtnWidth, modeBtnHeight, "USB", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    modeButtons[2] = { modeStartX + 2 * (modeBtnWidth + modeSpacing), modeY, modeBtnWidth, modeBtnHeight, "AM",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    modeButtons[3] = { modeStartX + 3 * (modeBtnWidth + modeSpacing), modeY, modeBtnWidth, modeBtnHeight, "FM",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
 
-    // Boutons de bande (4 boutons : 80M, 40M, 20M, 10M) disposés en ligne 2
-    const int16_t bandY = 345;
-    bandButtons[0] = { startX,                             bandY, btnWidth, btnHeight, "80m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
-    bandButtons[1] = { startX + (btnWidth + spacing),     bandY, btnWidth, btnHeight, "40m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
-    bandButtons[2] = { startX + 2 * (btnWidth + spacing), bandY, btnWidth, btnHeight, "20m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
-    bandButtons[3] = { startX + 3 * (btnWidth + spacing), bandY, btnWidth, btnHeight, "10m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    // Boutons de bande (4 boutons : 80M, 40M, 20M, 10M) disposés en ligne 2 (écran rond : Y=313)
+    const int16_t bandY = 313;
+    const int16_t bandBtnWidth = 74;
+    const int16_t bandBtnHeight = 48;
+    const int16_t bandSpacing = 10;
+    const int16_t bandStartX = 77;
 
-    // Bouton de retour sur l'écran de configuration
-    backBtn = { 35, 400, 410, 50, "< RETOUR ECRAN PRINCIPAL", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    bandButtons[0] = { bandStartX,                                 bandY, bandBtnWidth, bandBtnHeight, "80m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    bandButtons[1] = { bandStartX + (bandBtnWidth + bandSpacing),     bandY, bandBtnWidth, bandBtnHeight, "40m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    bandButtons[2] = { bandStartX + 2 * (bandBtnWidth + bandSpacing), bandY, bandBtnWidth, bandBtnHeight, "20m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+    bandButtons[3] = { bandStartX + 3 * (bandBtnWidth + bandSpacing), bandY, bandBtnWidth, bandBtnHeight, "10m", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
+
+    // Bouton de retour sur l'écran de configuration (écran rond : X=85, Y=255)
+    backBtn = { 85, 255, 310, 48, "< RETOUR PRINCIPAL", false, COLOR_INACTIVE_BTN, COLOR_ACCENT };
 
     // Boutons de débit bauds sur l'écran de configuration
-    baudButtons[0] = { 40,  150, 120, 50, "4800",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    baudButtons[1] = { 180, 150, 120, 50, "9600",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    baudButtons[2] = { 320, 150, 120, 50, "19200", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    baudButtons[3] = { 100, 230, 120, 50, "38400", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
-    baudButtons[4] = { 260, 230, 120, 50, "57600", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    // Ligne 1 : 4800, 9600, 19200 (Y=135)
+    baudButtons[0] = { 85,  135, 95, 48, "4800",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    baudButtons[1] = { 192, 135, 95, 48, "9600",  false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    baudButtons[2] = { 299, 135, 95, 48, "19200", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    // Ligne 2 : 38400, 57600 (Y=193)
+    baudButtons[3] = { 115, 193, 115, 48, "38400", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
+    baudButtons[4] = { 250, 193, 115, 48, "57600", false, COLOR_INACTIVE_BTN, COLOR_ACTIVE_BTN };
 }
 
 void DisplayGUI::begin() {
@@ -110,20 +117,19 @@ void DisplayGUI::drawMainScreen(uint32_t currentFreq, RadioMode currentMode, uin
 void DisplayGUI::drawConfigScreen(uint32_t currentBaud) {
     gfx->fillScreen(COLOR_BG);
 
-    // Barre d'en-tête
-    gfx->fillRect(0, 0, TFT_WIDTH, 50, COLOR_HEADER);
+    // Titre de l'en-tête (adapté pour écran rond à Y=45)
     gfx->setTextColor(COLOR_TEXT);
     gfx->setTextSize(2);
-    gfx->setCursor(30, 16);
-    gfx->print("CAT SETUP CONFIG");
+    gfx->setCursor(140, 45);
+    gfx->print("CAT CONFIG");
 
-    // Carte de titre
-    gfx->fillRoundRect(30, 70, 420, 50, 10, COLOR_CARD_BG);
-    gfx->drawRoundRect(30, 70, 420, 50, 10, COLOR_BORDER);
+    // Carte de sous-titre
+    gfx->fillRoundRect(80, 75, 320, 50, 10, COLOR_CARD_BG);
+    gfx->drawRoundRect(80, 75, 320, 50, 10, COLOR_BORDER);
     gfx->setTextColor(COLOR_TEXT_MUTED);
     gfx->setTextSize(2);
-    gfx->setCursor(45, 85);
-    gfx->print("Select Serial Baud Rate:");
+    gfx->setCursor(95, 90);
+    gfx->print("Select Baud Rate:");
 
     drawBaudButtons(currentBaud);
     drawButton(backBtn);
@@ -164,20 +170,20 @@ void DisplayGUI::update(uint32_t currentFreq, RadioMode currentMode, uint32_t st
 }
 
 void DisplayGUI::drawHeader(bool connected) {
-    // Barre supérieure
-    gfx->fillRect(0, 0, TFT_WIDTH, 50, COLOR_HEADER);
+    // Témoin lumineux d'état de connexion CAT (Vert = connecté, Rouge = déconnecté)
+    // Positionné à X=145, Y=55 pour s'inscrire dans le haut arrondi de l'écran
+    uint16_t statusColor = connected ? COLOR_GREEN : COLOR_RED;
+    gfx->fillCircle(145, 55, 7, statusColor);
+    gfx->drawCircle(145, 55, 9, COLOR_TEXT);
+
+    // Titre
     gfx->setTextColor(COLOR_TEXT);
     gfx->setTextSize(2);
-    gfx->setCursor(30, 16);
+    gfx->setCursor(165, 47);
     gfx->print("TS-2000 CAT");
 
     // Bouton CFG dans l'en-tête
     drawButton(cfgHeaderBtn);
-
-    // Témoin lumineux d'état de connexion CAT (Vert = connecté, Rouge = déconnecté)
-    uint16_t statusColor = connected ? COLOR_GREEN : COLOR_RED;
-    gfx->fillCircle(430, 25, 8, statusColor);
-    gfx->drawCircle(430, 25, 10, COLOR_TEXT);
 }
 
 String DisplayGUI::formatFrequency(uint32_t freqHz) {
@@ -195,28 +201,28 @@ String DisplayGUI::formatFrequency(uint32_t freqHz) {
 }
 
 void DisplayGUI::drawFrequency(uint32_t freqHz) {
-    gfx->fillRoundRect(30, 65, 420, 110, 12, COLOR_CARD_BG);
-    gfx->drawRoundRect(30, 65, 420, 110, 12, COLOR_BORDER);
+    gfx->fillRoundRect(80, 80, 320, 95, 12, COLOR_CARD_BG);
+    gfx->drawRoundRect(80, 80, 320, 95, 12, COLOR_BORDER);
 
     gfx->setTextColor(COLOR_TEXT_MUTED);
     gfx->setTextSize(2);
-    gfx->setCursor(45, 78);
-    gfx->print("VFO A FREQUENCY (MHz)");
+    gfx->setCursor(95, 92);
+    gfx->print("VFO A (MHz)");
 
     gfx->setTextColor(COLOR_FREQ);
     gfx->setTextSize(4);
-    gfx->setCursor(50, 115);
+    gfx->setCursor(90, 125);
     gfx->print(formatFrequency(freqHz));
 }
 
 void DisplayGUI::drawStepSize(uint32_t stepSize) {
-    gfx->fillRoundRect(30, 185, 420, 70, 10, COLOR_CARD_BG);
-    gfx->drawRoundRect(30, 185, 420, 70, 10, COLOR_BORDER);
+    gfx->fillRoundRect(70, 185, 340, 60, 10, COLOR_CARD_BG);
+    gfx->drawRoundRect(70, 185, 340, 60, 10, COLOR_BORDER);
 
     gfx->setTextColor(COLOR_TEXT);
     gfx->setTextSize(2);
-    gfx->setCursor(45, 210);
-    gfx->print("Tuning Step: ");
+    gfx->setCursor(85, 205);
+    gfx->print("Step: ");
 
     gfx->setTextColor(COLOR_ACCENT);
     gfx->setTextSize(3);
