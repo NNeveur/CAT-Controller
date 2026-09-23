@@ -7,7 +7,7 @@
 
 KenwoodCAT::KenwoodCAT()
     : catSerial(nullptr), currentBaudRate(DEFAULT_CAT_BAUDRATE), catRxPin(CAT_RX_PIN), catTxPin(CAT_TX_PIN),
-      currentFrequency(14200000), currentMode(MODE_USB),
+      currentFrequency(3765000), currentMode(MODE_LSB),
       connected(false), lastResponseTime(0), freqCallback(nullptr), modeCallback(nullptr) {
 }
 
