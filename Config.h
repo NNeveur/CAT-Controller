@@ -78,7 +78,7 @@
 // Broches UART de l'ESP32-S3 reliées à l'adaptateur MAX3232 TTL->RS232
 #define CAT_RX_PIN  44   // ESP32 RX <- MAX3232 TX
 #define CAT_TX_PIN  43   // ESP32 TX -> MAX3232 RX
-#define DEFAULT_CAT_BAUDRATE 57600 // Vitesse CAT par défaut du Kenwood TS-2000
+#define DEFAULT_CAT_BAUDRATE 9600 // Vitesse CAT par défaut du Kenwood TS-2000
 
 // Vitesses de communication CAT supportées
 const uint32_t CAT_BAUD_RATES[] = { 4800, 9600, 19200, 38400, 57600 };
@@ -116,8 +116,8 @@ struct BandInfo {
 };
 
 const BandInfo BANDS[] = {
-    {"80M", 3650000,  MODE_LSB, 3500000,  3800000},
-    {"40M", 7100000,  MODE_LSB, 7000000,  7200000},
+    {"80M", 3750000,  MODE_LSB, 3500000,  4000000},
+    {"40M", 7125000,  MODE_LSB, 7000000,  7300000},
     {"20M", 14200000, MODE_USB, 14000000, 14350000},
     {"10M", 28500000, MODE_USB, 28000000, 29700000}
 };
